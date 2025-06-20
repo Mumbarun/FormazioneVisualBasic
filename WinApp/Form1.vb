@@ -5,7 +5,7 @@ Public Class Form1
 
     Private Sub btnSave_Click(sender As Object, e As EventArgs) Handles btnSave.Click
         'stFirstName = InputBox("Please enter your name")
-        MessageBox.Show(config.Read("CustomInformation", "name", "Nessun nome trovato"))
+        MessageBox.Show(config.Read("CustomInformation", "name"))
     End Sub
 
     Private Sub btnAdd_Click(sender As Object, e As EventArgs) Handles btnAdd.Click
@@ -23,7 +23,7 @@ Public Class Form1
     Public Sub UpdateList()
         lvMain.Items.Clear()
 
-        Dim items As Dictionary(Of String, String) = config.ReadAll()
+        Dim items As Dictionary(Of String, String) = config.ReadAll("CustomInformation")
 
         If items.Count > 0 Then
             For Each item As KeyValuePair(Of String, String) In items
