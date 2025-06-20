@@ -5,12 +5,12 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{95DF2987-DA3A-4A8B-B51D-98699DB0F2B6}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
-    <StartupObject>WinApp.My.MyApplication</StartupObject>
+    <OutputType>Exe</OutputType>
+    <StartupObject>WinApp.Form1</StartupObject>
     <RootNamespace>WinApp</RootNamespace>
     <AssemblyName>WinApp</AssemblyName>
     <FileAlignment>512</FileAlignment>
-    <MyType>WindowsForms</MyType>
+    <MyType>Console</MyType>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
