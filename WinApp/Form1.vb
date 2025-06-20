@@ -5,10 +5,44 @@ Public Class Form1
 
     Private Sub btnSave_Click(sender As Object, e As EventArgs) Handles btnSave.Click
         'stFirstName = InputBox("Please enter your name")
-        MessageBox.Show(config.Read("UserInformation", "name", "Nessun nome trovato"))
+        MessageBox.Show(config.Read("CustomInformation", "name", "Nessun nome trovato"))
     End Sub
 
-    Private Sub tbName_TextChanged(sender As Object, e As EventArgs) Handles tbName.TextChanged
-        config.Write("UserInformation", "name", tbName.Text)
+    Private Sub btnAdd_Click(sender As Object, e As EventArgs) Handles btnAdd.Click
+        AddToList(tbName.Text.ToString(), "prova")
+
+        config.Write("CustomInformation", tbName.Text, "test")
+
+        UpdateList()
+    End Sub
+
+    Private Sub btnUpdate_Click(sender As Object, e As EventArgs) Handles btnUpdate.Click
+        UpdateList()
+    End Sub
+
+    Public Sub UpdateList()
+        lvMain.Items.Clear()
+
+        Dim items As Dictionary(Of String, String) = config.ReadAll()
+
+        If items.Count > 0 Then
+            For Each item As KeyValuePair(Of String, String) In items
+                AddToList(item.Key, item.Value)
+            Next
+        End If
+    End Sub
+
+    Public Sub AddToList(ByVal key As String, ByVal value As String)
+        Dim item As New ListViewItem(key)
+
+        item.SubItems.Add(value)
+
+        lvMain.Items.Add(item)
+    End Sub
+
+    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Dim sqlCon As MssqlManager = New MssqlManager("Server=(localdb)\Northwind;Database=Northwind;User=gino;Password=1234")
+
+        sqlCon.HasConnection()
     End Sub
 End Class
