@@ -3,35 +3,6 @@ Imports System.Runtime.InteropServices
 Imports System.Text
 
 Public Class Config
-    'Private Declare Auto Function GetPrivateProfileString Lib "kernel32" (
-    '    ByVal lpApplicationName As String,
-    '    ByVal lpKeyName As String,
-    '    ByVal lpDefault As String,
-    '    ByVal lpReturnedString As System.Text.StringBuilder,
-    '    ByVal nSize As Integer,
-    '    ByVal lpFileName As String
-    ') As Integer
-
-    'Private Declare Auto Function GetPrivateProfileSectionNames Lib "kernel32" (
-    '    ByVal lpReturnedString As System.Text.StringBuilder,
-    '    ByVal nSize As String,
-    '    ByVal lpFileName As String
-    ') As Integer
-
-    'Private Declare Auto Function GetPrivateProfileSection Lib "kernel32" (
-    '    ByVal lpAppName As String,
-    '    ByVal lpReturnedString As System.Text.StringBuilder,
-    '    ByVal nSize As String,
-    '    ByVal lpFileName As String
-    ') As Integer
-
-    'Private Declare Auto Function WritePrivateProfileString Lib "kernel32" (
-    '    ByVal lpApplicationName As String,
-    '    ByVal lpKeyName As String,
-    '    ByVal lpString As String,
-    '    ByVal lpFileName As String
-    ') As Integer
-
     Private ReadOnly filePath As String = "C:\Users\Francesco\Desktop\config.ini"
 
     Public Sub New()
@@ -40,37 +11,6 @@ Public Class Config
             fs.Close()
         End If
     End Sub
-
-    Private Function Test(ByVal myStringBuilder As StringBuilder) As String
-        Dim fullString As String = ""
-
-        If myStringBuilder.Length > 0 Then
-            Dim chars(myStringBuilder.Length - 1) As Char
-            myStringBuilder.CopyTo(0, chars, 0, myStringBuilder.Length)
-            Console.WriteLine("chars => " & chars)
-            fullString = New String(chars)
-        End If
-
-        Return fullString
-    End Function
-    Public Function GetSections() As List(Of String)
-        Dim sections As New List(Of String)()
-        Dim temp As New StringBuilder(255)
-        Dim charsRead As Integer
-
-        charsRead = GetPrivateProfileSectionNames(temp, 255, filePath)
-
-        Console.WriteLine("temp.ToString() => " & Test(temp))
-        'Console.WriteLine("charsRead => " & charsRead)
-        'Console.WriteLine("temp[0] => " & temp(0))
-
-        If charsRead > 0 Then
-            Dim rawSections As String = Test(temp)
-            sections.AddRange(rawSections.Split(New Char() {ControlChars.NullChar}, StringSplitOptions.RemoveEmptyEntries))
-        End If
-
-        Return sections
-    End Function
 
     Public Function GetKeysAndValues(ByVal sectionName As String) As Dictionary(Of String, String)
         Dim result As New Dictionary(Of String, String)
