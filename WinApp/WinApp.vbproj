@@ -5,12 +5,12 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{95DF2987-DA3A-4A8B-B51D-98699DB0F2B6}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <StartupObject>WinApp.Form1</StartupObject>
+    <OutputType>WinExe</OutputType>
+    <StartupObject>WinApp.My.MyApplication</StartupObject>
     <RootNamespace>WinApp</RootNamespace>
     <AssemblyName>WinApp</AssemblyName>
     <FileAlignment>512</FileAlignment>
-    <MyType>Console</MyType>
+    <MyType>WindowsForms</MyType>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
@@ -80,6 +80,12 @@
       <DependentUpon>Form1.vb</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="fDbConnect.Designer.vb">
+      <DependentUpon>fDbConnect.vb</DependentUpon>
+    </Compile>
+    <Compile Include="fDbConnect.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -98,6 +104,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="fDbConnect.resx">
+      <DependentUpon>fDbConnect.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.vb</DependentUpon>
     </EmbeddedResource>
