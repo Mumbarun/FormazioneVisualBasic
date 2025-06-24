@@ -6,17 +6,28 @@ Public Class Config
 
     Public Sub New(ByVal fp As String)
         If String.IsNullOrWhiteSpace(fp) Then
-            filePath = "C:\Users\Francesco\Desktop\config.ini"
+            'Read from command line arguments
+            For Each line As String In Environment.GetCommandLineArgs()
+                Dim cache(1) As String
+                cache = Split(line, "=", 2)
+
+                If cache(0) = "/PATH" Then
+                    filePath = cache(1)
+                End If
+            Next
         Else
+            'Read from class constructor
             filePath = fp
         End If
+
+        'Create the config file if not exists at filePath
         If Not My.Computer.FileSystem.FileExists(filePath) Then
             Dim fs As FileStream = File.Create(filePath)
             fs.Close()
         End If
     End Sub
 
-    Private Function getSection() As List(Of String)
+    Public Function getSections() As List(Of String)
         Dim lines As String() = File.ReadAllLines(filePath)
         Dim res As New List(Of String)()
 
@@ -108,18 +119,13 @@ Public Class Config
     Public Function Write(ByVal section As String, ByVal key As String, ByVal value As String) As String
         Dim lines As List(Of String) = File.ReadAllLines(filePath).ToList()
 
-        Dim sections As List(Of String) = getSection()
+        Dim sections As List(Of String) = getSections()
 
         'Check if it must create a "section" or not
         If sections.Contains(section) Then
             'The "section" already exists, now is checking if the key is already in the config file
 
             If Not String.IsNullOrWhiteSpace(getLine(getLinesBySection(section).ToArray(), key)) Then
-                'For Each line As String In getLinesBySection(section)
-                '    If Not line = key + "=" + value Then
-                '        line = key + "=" + value
-                '    End If
-                'Next
                 For i As Integer = 0 To (lines.Count - 1)
                     If lines(i).Contains("=") Then
                         Dim cache(1) As String
@@ -142,10 +148,6 @@ Public Class Config
             lines.Add("[" + section + "]")
             lines.Add(key + "=" + value)
         End If
-
-        For Each line In lines
-            MsgBox(line)
-        Next
 
         File.WriteAllLines(filePath, lines.ToArray())
         Return Read(section, key)

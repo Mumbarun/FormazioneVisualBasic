@@ -29,6 +29,7 @@ Partial Class Form1
         '
         'btnSave
         '
+        Me.btnSave.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnSave.Location = New System.Drawing.Point(712, 409)
         Me.btnSave.Name = "btnSave"
         Me.btnSave.Size = New System.Drawing.Size(76, 23)
@@ -38,6 +39,7 @@ Partial Class Form1
         '
         'btnUpdate
         '
+        Me.btnUpdate.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnUpdate.Location = New System.Drawing.Point(630, 409)
         Me.btnUpdate.Name = "btnUpdate"
         Me.btnUpdate.Size = New System.Drawing.Size(76, 23)
@@ -47,6 +49,7 @@ Partial Class Form1
         '
         'btnConnect
         '
+        Me.btnConnect.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.btnConnect.Location = New System.Drawing.Point(12, 409)
         Me.btnConnect.Name = "btnConnect"
         Me.btnConnect.Size = New System.Drawing.Size(148, 23)
