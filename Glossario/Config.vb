@@ -87,7 +87,7 @@ Public Class Config
     End Function
 
     Public Function Read(ByVal section As String, ByVal key As String) As String
-        If Not section = "" Then
+        If String.IsNullOrWhiteSpace(section) Then
             Return getLine(File.ReadAllLines(filePath), key)
         Else
             Dim lines As String() = getLinesBySection(section).ToArray()
@@ -121,19 +121,29 @@ Public Class Config
 
         Dim sections As List(Of String) = getSections()
 
+        'MsgBox(section + "_" + key + "_" + value)
+
         'Check if it must create a "section" or not
         If sections.Contains(section) Then
-            'The "section" already exists, now is checking if the key is already in the config file
+            'The section already exists, now is checking if the key is already in the section
 
             If Not String.IsNullOrWhiteSpace(getLine(getLinesBySection(section).ToArray(), key)) Then
+                Dim isInSection As Boolean = False
+
                 For i As Integer = 0 To (lines.Count - 1)
-                    If lines(i).Contains("=") Then
+                    If lines(i).Contains("=") And isInSection Then
                         Dim cache(1) As String
                         cache = Split(lines(i), "=", 2)
 
                         If key = cache(0) And Not value = cache(1) Then
                             lines(i) = key + "=" + value
                         End If
+                    End If
+
+                    If lines(i) = "[" + section + "]" Then
+                        isInSection = True
+                    ElseIf lines(i).Substring(0, 1) = "[" Then
+                        isInSection = False
                     End If
                 Next
             Else
@@ -148,6 +158,10 @@ Public Class Config
             lines.Add("[" + section + "]")
             lines.Add(key + "=" + value)
         End If
+
+        'For Each line As String In lines
+        '    MsgBox(line)
+        'Next
 
         File.WriteAllLines(filePath, lines.ToArray())
         Return Read(section, key)

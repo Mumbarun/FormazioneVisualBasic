@@ -27,12 +27,15 @@ Public Class fDbConnect
 
     Private Sub renderSections()
         lvMain.Items.Clear()
+        'lbMain.Items.Clear()
 
         For Each section As KeyValuePair(Of String, String) In sections
             Dim item As ListViewItem = New ListViewItem(section.Key)
             item.SubItems.Add(section.Value)
 
             lvMain.Items.Add(item)
+
+            'lbMain.Items.Add(section.Value + "_" + section.Key)
         Next
     End Sub
 
@@ -42,29 +45,10 @@ Public Class fDbConnect
         User = Split(config.Read(section, "User"), "=", 2)(1)
         Password = Split(config.Read(section, "Password"), "=", 2)(1)
 
-        If String.IsNullOrWhiteSpace(Server) Then
-            config.Write(section, "Server", "")
-        Else
-            tbServer.Text = Server
-        End If
-
-        If String.IsNullOrWhiteSpace(Database) Then
-            config.Write(section, "Database", "")
-        Else
-            tbDatabase.Text = Database
-        End If
-
-        If String.IsNullOrWhiteSpace(User) Then
-            config.Write(section, "User", "")
-        Else
-            tbUser.Text = User
-        End If
-
-        If String.IsNullOrWhiteSpace(Password) Then
-            config.Write(section, "Password", "")
-        Else
-            tbPassword.Text = Password
-        End If
+        tbServer.Text = Server
+        tbDatabase.Text = Database
+        tbUser.Text = User
+        tbPassword.Text = Password
     End Sub
 
     Private Sub fDbConnect_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -93,23 +77,11 @@ Public Class fDbConnect
     Private Sub lvMain_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lvMain.SelectedIndexChanged
         If lvMain.SelectedItems.Count > 0 Then
             selectedSection = "databaseConnection_" + lvMain.SelectedItems(0).Text
-            MsgBox(selectedSection)
             loadData(selectedSection)
         End If
     End Sub
 
     Private Sub btnNewConnection_Click(sender As Object, e As EventArgs) Handles btnNewConnection.Click
-        'loadSections()
-        'Dim length As Integer = 0
-        'length = sections.Count + 1
-
-        'config.Write("databaseConnection_" + length.ToString(), "Server", "")
-        'config.Write("databaseConnection_" + length.ToString(), "Database", "")
-        'config.Write("databaseConnection_" + length.ToString(), "User", "")
-        'config.Write("databaseConnection_" + length.ToString(), "Password", "")
-
-        'loadSections()
-
         loadSections()
         Dim length As Integer = 0
         length = sections.Count + 1

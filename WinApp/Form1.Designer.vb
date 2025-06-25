@@ -54,7 +54,7 @@ Partial Class Form1
         Me.btnConnect.Name = "btnConnect"
         Me.btnConnect.Size = New System.Drawing.Size(148, 23)
         Me.btnConnect.TabIndex = 5
-        Me.btnConnect.Text = "Connessione al database"
+        Me.btnConnect.Text = "Connessioni al database"
         Me.btnConnect.UseVisualStyleBackColor = True
         '
         'Form1

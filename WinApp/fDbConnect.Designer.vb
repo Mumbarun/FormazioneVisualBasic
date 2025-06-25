@@ -158,7 +158,9 @@ Partial Class fDbConnect
         Me.Controls.Add(Me.tbServer)
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.btnSave)
+        Me.MaximizeBox = False
         Me.Name = "fDbConnect"
+        Me.ShowInTaskbar = False
         Me.Text = "Form2"
         Me.ResumeLayout(False)
         Me.PerformLayout()
