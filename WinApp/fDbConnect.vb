@@ -96,4 +96,12 @@ Public Class fDbConnect
         loadSections()
         renderSections()
     End Sub
+
+    Private Sub btnTest_Click(sender As Object, e As EventArgs) Handles btnTest.Click
+        Dim connection As MssqlManager = New MssqlManager("Server=" + Server + ";Database=" + Database + ";User=" + User + ";Password=" + Password)
+
+        If connection.HasConnection() Then
+            MsgBox("Connessione effettuata con successo")
+        End If
+    End Sub
 End Class

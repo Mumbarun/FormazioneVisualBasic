@@ -35,6 +35,7 @@ Partial Class fDbConnect
         Me.id = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.connection = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.btnNewConnection = New System.Windows.Forms.Button()
+        Me.btnTest = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
         'btnSave
@@ -49,8 +50,9 @@ Partial Class fDbConnect
         '
         'Label1
         '
+        Me.Label1.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(491, 15)
+        Me.Label1.Location = New System.Drawing.Point(493, 15)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(38, 13)
         Me.Label1.TabIndex = 2
@@ -58,22 +60,25 @@ Partial Class fDbConnect
         '
         'tbServer
         '
-        Me.tbServer.Location = New System.Drawing.Point(588, 12)
+        Me.tbServer.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tbServer.Location = New System.Drawing.Point(552, 12)
         Me.tbServer.Name = "tbServer"
-        Me.tbServer.Size = New System.Drawing.Size(200, 20)
+        Me.tbServer.Size = New System.Drawing.Size(236, 20)
         Me.tbServer.TabIndex = 6
         '
         'tbDatabase
         '
-        Me.tbDatabase.Location = New System.Drawing.Point(588, 38)
+        Me.tbDatabase.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tbDatabase.Location = New System.Drawing.Point(552, 38)
         Me.tbDatabase.Name = "tbDatabase"
-        Me.tbDatabase.Size = New System.Drawing.Size(200, 20)
+        Me.tbDatabase.Size = New System.Drawing.Size(236, 20)
         Me.tbDatabase.TabIndex = 8
         '
         'Label2
         '
+        Me.Label2.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(491, 41)
+        Me.Label2.Location = New System.Drawing.Point(493, 41)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(53, 13)
         Me.Label2.TabIndex = 7
@@ -81,15 +86,17 @@ Partial Class fDbConnect
         '
         'tbUser
         '
-        Me.tbUser.Location = New System.Drawing.Point(588, 64)
+        Me.tbUser.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tbUser.Location = New System.Drawing.Point(552, 64)
         Me.tbUser.Name = "tbUser"
-        Me.tbUser.Size = New System.Drawing.Size(200, 20)
+        Me.tbUser.Size = New System.Drawing.Size(236, 20)
         Me.tbUser.TabIndex = 10
         '
         'Label3
         '
+        Me.Label3.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Label3.AutoSize = True
-        Me.Label3.Location = New System.Drawing.Point(491, 67)
+        Me.Label3.Location = New System.Drawing.Point(493, 67)
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(29, 13)
         Me.Label3.TabIndex = 9
@@ -97,15 +104,17 @@ Partial Class fDbConnect
         '
         'tbPassword
         '
-        Me.tbPassword.Location = New System.Drawing.Point(588, 90)
+        Me.tbPassword.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tbPassword.Location = New System.Drawing.Point(552, 90)
         Me.tbPassword.Name = "tbPassword"
-        Me.tbPassword.Size = New System.Drawing.Size(200, 20)
+        Me.tbPassword.Size = New System.Drawing.Size(236, 20)
         Me.tbPassword.TabIndex = 12
         '
         'Label4
         '
+        Me.Label4.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Label4.AutoSize = True
-        Me.Label4.Location = New System.Drawing.Point(491, 93)
+        Me.Label4.Location = New System.Drawing.Point(493, 93)
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(53, 13)
         Me.Label4.TabIndex = 11
@@ -113,12 +122,14 @@ Partial Class fDbConnect
         '
         'lvMain
         '
+        Me.lvMain.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.lvMain.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.id, Me.connection})
         Me.lvMain.HideSelection = False
         Me.lvMain.Location = New System.Drawing.Point(12, 12)
         Me.lvMain.MultiSelect = False
         Me.lvMain.Name = "lvMain"
-        Me.lvMain.Size = New System.Drawing.Size(473, 426)
+        Me.lvMain.Size = New System.Drawing.Size(475, 426)
         Me.lvMain.TabIndex = 13
         Me.lvMain.UseCompatibleStateImageBehavior = False
         Me.lvMain.View = System.Windows.Forms.View.Details
@@ -142,11 +153,22 @@ Partial Class fDbConnect
         Me.btnNewConnection.Text = "Nuova connessione"
         Me.btnNewConnection.UseVisualStyleBackColor = True
         '
+        'btnTest
+        '
+        Me.btnTest.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnTest.Location = New System.Drawing.Point(493, 415)
+        Me.btnTest.Name = "btnTest"
+        Me.btnTest.Size = New System.Drawing.Size(76, 23)
+        Me.btnTest.TabIndex = 15
+        Me.btnTest.Text = "Prova"
+        Me.btnTest.UseVisualStyleBackColor = True
+        '
         'fDbConnect
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(800, 450)
+        Me.Controls.Add(Me.btnTest)
         Me.Controls.Add(Me.btnNewConnection)
         Me.Controls.Add(Me.lvMain)
         Me.Controls.Add(Me.tbPassword)
@@ -159,6 +181,7 @@ Partial Class fDbConnect
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.btnSave)
         Me.MaximizeBox = False
+        Me.MinimumSize = New System.Drawing.Size(816, 489)
         Me.Name = "fDbConnect"
         Me.ShowInTaskbar = False
         Me.Text = "Form2"
@@ -180,4 +203,5 @@ Partial Class fDbConnect
     Friend WithEvents id As ColumnHeader
     Friend WithEvents connection As ColumnHeader
     Friend WithEvents btnNewConnection As Button
+    Friend WithEvents btnTest As Button
 End Class
