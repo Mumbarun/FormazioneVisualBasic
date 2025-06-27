@@ -29,4 +29,19 @@ Public Class MssqlManager
             Return False
         End Try
     End Function
+
+    Public Function executeCommand(ByVal c As String) As Boolean
+        Try
+            connection.Open()
+
+            Dim command As New SqlCommand(c)
+            command.ExecuteNonQuery()
+
+            connection.Close()
+            Return True
+        Catch ex As Exception
+            MsgBox("Errore nell'esecuzione di quet'operazione nel database => " + ex.Message)
+            Return False
+        End Try
+    End Function
 End Class

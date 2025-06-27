@@ -27,16 +27,13 @@ Partial Class Form1
         Me.btnConnect = New System.Windows.Forms.Button()
         Me.tcMain = New System.Windows.Forms.TabControl()
         Me.TabPage1 = New System.Windows.Forms.TabPage()
-        Me.dgvInTab = New System.Windows.Forms.DataGridView()
         Me.tcMain.SuspendLayout()
-        Me.TabPage1.SuspendLayout()
-        CType(Me.dgvInTab, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'btnSave
         '
         Me.btnSave.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnSave.Location = New System.Drawing.Point(712, 409)
+        Me.btnSave.Location = New System.Drawing.Point(426, 426)
         Me.btnSave.Name = "btnSave"
         Me.btnSave.Size = New System.Drawing.Size(76, 23)
         Me.btnSave.TabIndex = 0
@@ -46,7 +43,7 @@ Partial Class Form1
         'btnUpdate
         '
         Me.btnUpdate.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnUpdate.Location = New System.Drawing.Point(630, 409)
+        Me.btnUpdate.Location = New System.Drawing.Point(344, 426)
         Me.btnUpdate.Name = "btnUpdate"
         Me.btnUpdate.Size = New System.Drawing.Size(76, 23)
         Me.btnUpdate.TabIndex = 4
@@ -56,7 +53,7 @@ Partial Class Form1
         'btnConnect
         '
         Me.btnConnect.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnConnect.Location = New System.Drawing.Point(12, 409)
+        Me.btnConnect.Location = New System.Drawing.Point(12, 426)
         Me.btnConnect.Name = "btnConnect"
         Me.btnConnect.Size = New System.Drawing.Size(148, 23)
         Me.btnConnect.TabIndex = 5
@@ -65,49 +62,39 @@ Partial Class Form1
         '
         'tcMain
         '
+        Me.tcMain.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tcMain.Controls.Add(Me.TabPage1)
         Me.tcMain.Location = New System.Drawing.Point(12, 12)
         Me.tcMain.Name = "tcMain"
         Me.tcMain.SelectedIndex = 0
-        Me.tcMain.Size = New System.Drawing.Size(776, 391)
+        Me.tcMain.Size = New System.Drawing.Size(490, 408)
         Me.tcMain.TabIndex = 6
         '
         'TabPage1
         '
-        Me.TabPage1.Controls.Add(Me.dgvInTab)
         Me.TabPage1.Location = New System.Drawing.Point(4, 22)
         Me.TabPage1.Name = "TabPage1"
         Me.TabPage1.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage1.Size = New System.Drawing.Size(768, 365)
+        Me.TabPage1.Size = New System.Drawing.Size(482, 382)
         Me.TabPage1.TabIndex = 0
         Me.TabPage1.Text = "TabPage1"
         Me.TabPage1.UseVisualStyleBackColor = True
-        '
-        'dgvInTab
-        '
-        Me.dgvInTab.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.dgvInTab.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvInTab.Location = New System.Drawing.Point(6, 6)
-        Me.dgvInTab.Name = "dgvInTab"
-        Me.dgvInTab.Size = New System.Drawing.Size(756, 353)
-        Me.dgvInTab.TabIndex = 0
         '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(800, 444)
+        Me.ClientSize = New System.Drawing.Size(514, 461)
         Me.Controls.Add(Me.tcMain)
         Me.Controls.Add(Me.btnConnect)
         Me.Controls.Add(Me.btnUpdate)
         Me.Controls.Add(Me.btnSave)
+        Me.MinimumSize = New System.Drawing.Size(500, 500)
         Me.Name = "Form1"
         Me.Text = "Form1"
         Me.tcMain.ResumeLayout(False)
-        Me.TabPage1.ResumeLayout(False)
-        CType(Me.dgvInTab, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 
     End Sub
@@ -117,5 +104,4 @@ Partial Class Form1
     Friend WithEvents btnConnect As Button
     Friend WithEvents tcMain As TabControl
     Friend WithEvents TabPage1 As TabPage
-    Friend WithEvents dgvInTab As DataGridView
 End Class
