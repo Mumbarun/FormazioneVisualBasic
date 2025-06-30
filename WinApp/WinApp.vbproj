@@ -73,6 +73,12 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="fCreate.Designer.vb">
+      <DependentUpon>fCreate.vb</DependentUpon>
+    </Compile>
+    <Compile Include="fCreate.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Form1.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -104,6 +110,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="fCreate.resx">
+      <DependentUpon>fCreate.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="fDbConnect.resx">
       <DependentUpon>fDbConnect.vb</DependentUpon>
     </EmbeddedResource>

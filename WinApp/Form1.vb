@@ -69,14 +69,19 @@ Public Class Form1
 
         AddHandler btnExecute.Click, AddressOf executeCommand
 
-        'Adding the query string text box
-        Dim tbQuery As TextBox = New TextBox()
+        'Adding the query string combobox
+        Dim cbQuery As ComboBox = New ComboBox()
 
-        tbQuery.Location = New Point(22, 75)
-        tbQuery.Size = New Drawing.Size(175, 20)
-        tbQuery.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
+        cbQuery.Items.Clear()
+        For Each table As String In tables(i).Rows(0)("MssqlManager").tables
+            cbQuery.Items.Add(table)
+        Next
 
-        AddHandler tbQuery.TextChanged, AddressOf updateQuery
+        cbQuery.Location = New Point(22, 75)
+        cbQuery.Size = New Drawing.Size(175, 20)
+        cbQuery.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
+
+        AddHandler cbQuery.TextChanged, AddressOf updateQuery
 
         'Applying components to the tab
         'Dim sqlData As SqlDataAdapter = New SqlDataAdapter("SELECT * FROM Categories", connection)
@@ -90,19 +95,12 @@ Public Class Form1
         page.Controls.Add(dgv)
         page.Controls.Add(btnUpdate)
         page.Controls.Add(btnExecute)
-        page.Controls.Add(tbQuery)
+        'page.Controls.Add(tbQuery)
+        page.Controls.Add(cbQuery)
 
         tcMain.TabPages.RemoveAt(i)
         tcMain.TabPages.Insert(i, page)
     End Sub
-
-    'Private Sub generateMssqlManagers()
-    '    sqlConnections.Clear()
-
-    '    For Each section As String In availableSections
-    '        sqlConnections.Add(generateMssqlManager(section))
-    '    Next
-    'End Sub
 
     Private Function generateMssqlManager(ByVal section As String) As MssqlManager
         Dim Server As String = Split(config.Read(section, "Server"), "=", 2)(1)
@@ -165,17 +163,22 @@ Public Class Form1
     End Sub
 
     Private Sub executeCommand(sender As Object, e As EventArgs)
-        Dim command As String = InputBox("Inserire comando", "Inserire comando", "Inserire comando")
+        Dim createForm As fCreate = New fCreate(tables(tcMain.SelectedIndex).Rows(0)("MssqlManager"), tables(tcMain.SelectedIndex).Rows(0)("Table"))
+        If createForm.ShowDialog() = DialogResult.OK Then
+            MsgBox("form creato")
 
-        MsgBox("Esecuzione del comando => " + command)
+            updateTab()
+        Else
+            MsgBox("form annullato")
 
-        tables(tcMain.SelectedIndex).Rows(0)("MssqlManager").executeCommand(command)
+            updateTab()
+        End If
     End Sub
 
     Private Sub updateQuery(sender As Object, e As EventArgs)
-        Dim tbQuery As TextBox = DirectCast(sender, TextBox)
+        Dim cbQuery As ComboBox = DirectCast(sender, ComboBox)
 
-        tables(tcMain.SelectedIndex).Rows(0)("Table") = tbQuery.Text
+        tables(tcMain.SelectedIndex).Rows(0)("Table") = cbQuery.Text
     End Sub
 
     Private Sub btnConnect_Click(sender As Object, e As EventArgs) Handles btnConnect.Click
