@@ -62,12 +62,12 @@ Public Class Form1
         'Adding the connect button component to the tab
         Dim btnExecute = New Button()
 
-        btnExecute.Text = "Esegui"
+        btnExecute.Text = "Nuovo"
         btnExecute.Location = New Point(77, 75)
         btnExecute.Size = New Drawing.Size(76, 23)
         btnExecute.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
 
-        AddHandler btnExecute.Click, AddressOf executeCommand
+        AddHandler btnExecute.Click, AddressOf newElement
 
         'Adding the query string combobox
         Dim cbQuery As ComboBox = New ComboBox()
@@ -162,7 +162,9 @@ Public Class Form1
         generateTab(tcMain.SelectedIndex)
     End Sub
 
-    Private Sub executeCommand(sender As Object, e As EventArgs)
+    Private Sub newElement(sender As Object, e As EventArgs)
+        updateTab()
+
         Dim createForm As fCreate = New fCreate(tables(tcMain.SelectedIndex).Rows(0)("MssqlManager"), tables(tcMain.SelectedIndex).Rows(0)("Table"))
         If createForm.ShowDialog() = DialogResult.OK Then
             MsgBox("form creato")
