@@ -1,7 +1,7 @@
 ﻿Imports Glossario
 
 Public Class fDbConnect
-    Private ReadOnly config As Config = New Config("")
+    Private ReadOnly config As Config = New Config()
     Private sections As Dictionary(Of String, String) = New Dictionary(Of String, String)
     Private selectedSection As String = "databaseConnection_1"
 

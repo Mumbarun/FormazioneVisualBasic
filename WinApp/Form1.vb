@@ -5,7 +5,7 @@ Imports Microsoft.SqlServer
 Imports Microsoft.VisualBasic.ApplicationServices
 
 Public Class Form1
-    Private ReadOnly config As Config = New Config("")
+    Private ReadOnly config As Config = New Config()
     Private availableSections As String() = generateSections()
     Private tables As DataTable() = generateTables()
 
@@ -45,9 +45,36 @@ Public Class Form1
         'Adding a new DataGridVIew component to the tab
         Dim dgv As DataGridView = New DataGridView()
 
+        dgv.Name = "dgvMain"
         dgv.Location = New Point(0, 0)
         dgv.Size = New Drawing.Size(200, 70)
         dgv.Anchor = AnchorStyles.Right Or AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Top
+
+        'Adding a new ToolStripMenu
+        Dim cms As ContextMenuStrip = New ContextMenuStrip
+        cms.Name = "cms" + section
+
+        'Adding Edit button
+        Dim tsmiEdit As ToolStripMenuItem = New ToolStripMenuItem("Modifica")
+        tsmiEdit.Name = "tsmiEdit" + section
+        AddHandler tsmiEdit.Click, AddressOf editItem
+
+        'Adding Delete button
+        Dim tsmiDelete As ToolStripMenuItem = New ToolStripMenuItem("Elimina")
+        tsmiDelete.Name = "tsmiDelete" + section
+        AddHandler tsmiDelete.Click, AddressOf deleteItem
+
+        cms.Items.Add(tsmiEdit)
+        cms.Items.Add(tsmiDelete)
+
+        dgv.ContextMenuStrip = cms
+
+        'Setting the DataGridView in read only
+        dgv.MultiSelect = False
+        dgv.ReadOnly = True
+
+        'Adding the mouse down manager function for auto-select the DataGridVIew row
+        AddHandler dgv.MouseDown, AddressOf dgvMouseDown
 
         'Adding the connect button component to the tab
         Dim btnUpdate = New Button()
@@ -84,7 +111,6 @@ Public Class Form1
         AddHandler cbQuery.TextChanged, AddressOf updateQuery
 
         'Applying components to the tab
-        'Dim sqlData As SqlDataAdapter = New SqlDataAdapter("SELECT * FROM Categories", connection)
         Dim sqlData As SqlDataAdapter = New SqlDataAdapter("SELECT * FROM " + row("Table"), connection)
         Dim dt As DataTable = New DataTable()
         If Not String.IsNullOrWhiteSpace(row("Table")) Then
@@ -166,21 +192,61 @@ Public Class Form1
         updateTab()
 
         Dim createForm As fCreate = New fCreate(tables(tcMain.SelectedIndex).Rows(0)("MssqlManager"), tables(tcMain.SelectedIndex).Rows(0)("Table"))
-        If createForm.ShowDialog() = DialogResult.OK Then
-            MsgBox("form creato")
 
-            updateTab()
-        Else
-            MsgBox("form annullato")
+        createForm.ShowDialog()
+        updateTab()
 
-            updateTab()
-        End If
+        'If createForm.ShowDialog() = DialogResult.OK Then
+        '    MsgBox("form creato")
+
+        '    updateTab()
+        'Else
+        '    MsgBox("form annullato")
+
+        '    updateTab()
+        'End If
     End Sub
 
     Private Sub updateQuery(sender As Object, e As EventArgs)
         Dim cbQuery As ComboBox = DirectCast(sender, ComboBox)
 
         tables(tcMain.SelectedIndex).Rows(0)("Table") = cbQuery.Text
+    End Sub
+
+    Private Sub editItem(sender As Object, e As EventArgs)
+        MsgBox("Edit")
+    End Sub
+
+    Private Sub deleteItem(sender As Object, e As EventArgs)
+        Dim dgv As DataGridView = Me.Controls.Find("dgvMain", True).FirstOrDefault()
+
+        If dgv.SelectedRows.Count > 0 Then
+            Dim rSelected As DataGridViewRow = dgv.SelectedRows(0)
+
+            Dim query As Dictionary(Of String, Object) = New Dictionary(Of String, Object)
+
+            For Each cell As DataGridViewCell In rSelected.Cells
+                Dim key As String = dgv.Columns.Item(cell.ColumnIndex).HeaderText
+
+                query.Add(key, cell.Value)
+            Next
+
+            tables(tcMain.SelectedIndex).Rows(0)("MssqlManager").deleteOne(tables(tcMain.SelectedIndex).Rows(0)("table"), query)
+        Else
+            MsgBox("Nessuna riga evidenziata")
+        End If
+    End Sub
+
+    Private Sub dgvMouseDown(sender As Object, e As MouseEventArgs)
+        If e.Button = MouseButtons.Right Then
+            Dim dgv As DataGridView = DirectCast(sender, DataGridView)
+            Dim hitTest As DataGridView.HitTestInfo = dgv.HitTest(e.X, e.Y)
+
+            If hitTest.Type = DataGridViewHitTestType.Cell OrElse hitTest.Type = DataGridViewHitTestType.RowHeader Then
+                dgv.ClearSelection() ' Deseleziona eventuali righe precedentemente selezionate
+                dgv.Rows(hitTest.RowIndex).Selected = True
+            End If
+        End If
     End Sub
 
     Private Sub btnConnect_Click(sender As Object, e As EventArgs) Handles btnConnect.Click

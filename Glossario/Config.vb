@@ -4,21 +4,27 @@ Imports System.IO
 Public Class Config
     Private filePath As String
 
-    Public Sub New(ByVal fp As String)
-        If String.IsNullOrWhiteSpace(fp) Then
-            'Read from command line arguments
-            For Each line As String In Environment.GetCommandLineArgs()
-                Dim cache(1) As String
-                cache = Split(line, "=", 2)
+    Public Sub New()
+        'Read from command line arguments
+        For Each line As String In Environment.GetCommandLineArgs()
+            Dim cache(1) As String
+            cache = Split(line, "=", 2)
 
-                If cache(0) = "/PATH" Then
-                    filePath = cache(1)
-                End If
-            Next
-        Else
-            'Read from class constructor
-            filePath = fp
+            If cache(0) = "/PATH" Then
+                filePath = cache(1)
+            End If
+        Next
+
+        'Create the config file if not exists at filePath
+        If Not My.Computer.FileSystem.FileExists(filePath) Then
+            Dim fs As FileStream = File.Create(filePath)
+            fs.Close()
         End If
+    End Sub
+
+    Public Sub New(ByVal fp As String)
+        'Read from class constructor
+        filePath = fp
 
         'Create the config file if not exists at filePath
         If Not My.Computer.FileSystem.FileExists(filePath) Then

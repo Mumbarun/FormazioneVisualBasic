@@ -1,5 +1,6 @@
 ﻿Imports System.Data.Sql
 Imports System.Data.SqlClient
+Imports System.Net
 
 Public Class MssqlManager
     Public connection As SqlConnection
@@ -226,6 +227,40 @@ Public Class MssqlManager
     Public Function createNew(ByVal query As String) As Boolean
         Try
             executeCommand(query)
+
+            Return True
+        Catch ex As Exception
+            Return False
+        End Try
+    End Function
+
+    Public Function deleteOne(ByVal table As String, ByVal inputData As Dictionary(Of String, Object)) As Boolean
+        'Filter data for the query
+        Dim data As Dictionary(Of String, Object) = New Dictionary(Of String, Object)
+
+        For Each item As KeyValuePair(Of String, Object) In inputData
+            If Not item.Value.ToString() = "" Then
+                data.Add(item.Key, item.Value)
+            End If
+        Next
+
+        Try
+            Dim query As String = "DELETE FROM " + table & vbCrLf &
+                "WHERE "
+
+            For Each item As KeyValuePair(Of String, Object) In data
+                If TypeOf item.Value Is String Then
+                    query = query & item.Key + " = '" + item.Value + "'"
+                Else
+                    query = query & item.Key + " = " + item.Value.ToString()
+                End If
+
+                If Not item.Equals(data.Last()) Then
+                    query = query & " AND "
+                End If
+            Next
+
+            MsgBox(query)
 
             Return True
         Catch ex As Exception

@@ -112,6 +112,7 @@
   <ItemGroup>
     <EmbeddedResource Include="fCreate.resx">
       <DependentUpon>fCreate.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="fDbConnect.resx">
       <DependentUpon>fDbConnect.vb</DependentUpon>
