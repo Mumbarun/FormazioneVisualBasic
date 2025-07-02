@@ -25,12 +25,6 @@ Public Class MssqlManager
         Public Property maxLength As Integer
         Public Property isNullable As Boolean
 
-        'Sub New(Optional ByRef n As String = "", Optional ByRef t As String = "", Optional ByRef mL As Integer = -1, Optional iN As Boolean = False)
-        '    name = n
-        '    type = t
-        '    maxLength = mL
-        '    isNullable = iN
-        'End Sub
         Sub New()
         End Sub
         Sub New(ByRef n As String, ByRef t As String, ByRef mL As Integer, isN As Boolean)
@@ -225,7 +219,16 @@ Public Class MssqlManager
             connection.Close()
             Return True
         Catch ex As Exception
-            MsgBox("Errore nell'esecuzione di quet'operazione nel database => " + ex.Message)
+            Return False
+        End Try
+    End Function
+
+    Public Function createNew(ByVal query As String) As Boolean
+        Try
+            executeCommand(query)
+
+            Return True
+        Catch ex As Exception
             Return False
         End Try
     End Function

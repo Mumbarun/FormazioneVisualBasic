@@ -106,7 +106,7 @@ Public Class fDbConnect
     End Sub
 
     Private Sub btnSave_Click(sender As Object, e As EventArgs) Handles btnSave.Click
-        Form1.generateData()
+        Form1.loadData()
         Me.Close()
     End Sub
 End Class

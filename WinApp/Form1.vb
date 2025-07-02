@@ -13,10 +13,10 @@ Public Class Form1
     End Sub
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        generateData()
+        loadData()
     End Sub
 
-    Public Sub generateData()
+    Public Sub loadData()
         'generateMssqlManagers()
 
         generateTabs()

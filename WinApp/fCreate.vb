@@ -4,7 +4,6 @@ Public Class fCreate
     Private mssqlManager As MssqlManager
     Private table As String
     Private columns As MssqlManager.ColumnInfo()
-    Private values As List(Of Object) = New List(Of Object)
     Private tMain As DataTable
 
     Public Sub New(ByVal mssqlManagerInput As MssqlManager, ByVal tableInput As String)
@@ -18,25 +17,11 @@ Public Class fCreate
 
         loadData()
 
-        'For Each info As MssqlManager.ColumnInfo In columns
-        '    MsgBox("Table => " + table + " con => " + info.name + " | " + info.type.ToString() + " | " + info.maxLength.ToString() + " | " + info.isNullable.ToString().ToUpper())
-        'Next
-
         render()
     End Sub
 
     Private Sub loadData()
         columns = mssqlManager.reorderTableColumns(mssqlManager.getTableColumns(table)).ToArray()
-
-        For Each info As MssqlManager.ColumnInfo In columns
-            If info.type = "String" Or info.type = "Id" Then
-                values.Add("")
-            ElseIf info.type = "Integer" Or info.type = "Decimal" Then
-                values.Add(0)
-            Else
-                values.Add("")
-            End If
-        Next
 
         tMain = generateTable()
     End Sub
@@ -125,6 +110,46 @@ Public Class fCreate
         vsbMain.Maximum = pMain.VerticalScroll.Maximum
     End Sub
 
+    Private Function generateQuery() As String
+        'Dim query As String = "SET IDENTITY_INSERT " + table + " ON; " &
+        '    "SET IDENTITY_INSERT " + table + " ON; Insert into " + table + " values("
+        Dim query As String = "SET IDENTITY_INSERT " + table + " ON;" & vbCrLf &
+            "INSERT INTO " + table + " ("
+
+        For i As Integer = 0 To (tMain.Rows.Count - 1)
+            Dim row As DataRow = tMain.Rows(i)
+            Dim info As MssqlManager.ColumnInfo = row("info")
+
+            query = query & info.name
+
+            If i < tMain.Rows.Count - 1 Then
+                query = query & ","
+            End If
+        Next
+
+        query = query & ")" & vbCrLf &
+            "VALUES ("
+
+        For i As Integer = 0 To (tMain.Rows.Count - 1)
+            Dim row As DataRow = tMain.Rows(i)
+            Dim info As MssqlManager.ColumnInfo = row("info")
+
+            If row("value").ToString() = "" Then
+                query = query & "NULL"
+            Else
+                query = query & "'" + row("value").ToString() + "'"
+            End If
+
+            If i < tMain.Rows.Count - 1 Then
+                query = query & ","
+            End If
+        Next
+        query = query & ")" & vbCrLf &
+            "SET IDENTITY_INSERT " + table + " OFF;"
+
+        Return query
+    End Function
+
     Private Function generateTable() As DataTable
         Dim res As DataTable = New DataTable
 
@@ -144,36 +169,36 @@ Public Class fCreate
 
         'Creating data rows
         For Each info As MssqlManager.ColumnInfo In columns
-            Dim row As DataRow = res.NewRow()
+            If Not info.type = "Id" Then
+                Dim row As DataRow = res.NewRow()
 
-            row.Item("info") = info
-            If info.type = "String" Or info.type = "Id" Then
-                row.Item("id") = "tb_" + info.name
-                row.Item("value") = ""
-            ElseIf info.type = "Integer" Or info.type = "Decimal" Then
-                row.Item("id") = "nud_" + info.name
-                row.Item("value") = 0
-            Else
-                row.Item("id") = info.name
-                row.Item("value") = ""
+                row.Item("info") = info
+                If info.type = "String" Then
+                    row.Item("id") = "tb_" + info.name
+                    row.Item("value") = ""
+                ElseIf info.type = "Integer" Or info.type = "Decimal" Then
+                    row.Item("id") = "nud_" + info.name
+                    row.Item("value") = 0
+                Else
+                    row.Item("id") = info.name
+                    row.Item("value") = ""
+                End If
+
+                res.Rows.Add(row)
             End If
-
-            res.Rows.Add(row)
         Next
 
         Return res
     End Function
 
     Private Sub btnSave_Click(sender As Object, e As EventArgs) Handles btnSave.Click
-        'Get the values in the form
-
-        For Each v As Object In values
-            MsgBox(v.ToString())
-        Next
-
-        For i As Integer = 0 To (columns.Length - 1)
-
-        Next
+        Dim query As String = generateQuery()
+        If mssqlManager.executeCommand(query) Then
+            Form1.loadData()
+            Me.Close()
+        Else
+            MsgBox("Errore durante la creazione dell'oggetto in " + table)
+        End If
     End Sub
 
     Private Sub vsbMain_Scroll(sender As Object, e As ScrollEventArgs) Handles vsbMain.Scroll
@@ -187,13 +212,18 @@ Public Class fCreate
     Private Sub tbUpdateValues(sender As Object, e As EventArgs)
         Dim tb As TextBox = DirectCast(sender, TextBox)
 
-        MsgBox(tb.Name)
         Dim row As DataRow = tMain.Select("id='" + tb.Name + "'").FirstOrDefault()
+        Dim index As Integer = tMain.Rows.IndexOf(row)
+
+        tMain.Rows(index)("value") = tb.Text
     End Sub
 
     Private Sub nudUpdateValues(sender As Object, e As EventArgs)
-        Dim tb As NumericUpDown = DirectCast(sender, NumericUpDown)
+        Dim nud As NumericUpDown = DirectCast(sender, NumericUpDown)
 
-        MsgBox(tb.Name)
+        Dim row As DataRow = tMain.Select("id='" + nud.Name + "'").FirstOrDefault()
+        Dim index As Integer = tMain.Rows.IndexOf(row)
+
+        tMain.Rows(index)("value") = nud.Value
     End Sub
 End Class
