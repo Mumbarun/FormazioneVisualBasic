@@ -23,14 +23,16 @@ Public Class MssqlManager
     Public Class ColumnInfo
         Public Property name As String
         Public Property type As String
+        Public Property originalType As String
         Public Property maxLength As Integer
         Public Property isNullable As Boolean
 
         Sub New()
         End Sub
-        Sub New(ByRef n As String, ByRef t As String, ByRef mL As Integer, isN As Boolean)
+        Sub New(ByVal n As String, ByVal t As String, ByVal oT As String, ByVal mL As Integer, ByVal isN As Boolean)
             name = n
             type = t
+            originalType = oT
             maxLength = mL
             isNullable = isN
         End Sub
@@ -44,8 +46,6 @@ Public Class MssqlManager
 
             Return True
         Catch ex As Exception
-            MsgBox(ex.Message)
-
             Return False
         End Try
     End Function
@@ -70,9 +70,7 @@ Public Class MssqlManager
 
             Return res.ToArray()
         Catch ex As Exception
-            MsgBox(ex.Message)
-
-            connection.Close()
+            'connection.Close()
 
             Return res.ToArray()
         End Try
@@ -117,8 +115,6 @@ Public Class MssqlManager
 
             Return res
         Catch ex As Exception
-            MsgBox(ex.Message)
-
             Return res
         End Try
     End Function
@@ -204,7 +200,7 @@ Public Class MssqlManager
                 type = "String"
             End If
 
-            res.Add(New ColumnInfo(column.name, type, maxLength, column.isNullable))
+            res.Add(New ColumnInfo(column.name, type, column.type, maxLength, column.isNullable))
         Next
 
         Return res
@@ -224,6 +220,46 @@ Public Class MssqlManager
         End Try
     End Function
 
+    Public Function executeGet(ByVal c As String) As Dictionary(Of String, Object)
+        Dim res As Dictionary(Of String, Object) = New Dictionary(Of String, Object)
+
+        Try
+            connection.Open()
+
+            Dim command As New SqlCommand(c, connection)
+            Dim reader As SqlDataReader = command.ExecuteReader()
+
+            If reader.Read() Then
+                For i As Integer = 0 To reader.FieldCount - 1
+                    res.Add(reader.GetName(i), reader.GetValue(i))
+                Next
+            End If
+
+            connection.Close()
+
+            Return res
+        Catch ex As Exception
+            Return New Object
+        End Try
+    End Function
+
+    Public Function findOne(ByVal table As String, ByVal input As KeyValuePair(Of String, Object)) As Dictionary(Of String, Object)
+        Try
+            Dim query As String = "SELECT * FROM " + table & vbCrLf &
+                " WHERE "
+
+            If TypeOf input.Value Is String Then
+                query = query + input.Key + " = " + "'" + input.Value + "'"
+            Else
+                query = query + input.Key + " = " + input.Value.ToString()
+            End If
+
+            Return executeGet(query)
+        Catch ex As Exception
+            Return New Dictionary(Of String, Object)
+        End Try
+    End Function
+
     Public Function createNew(ByVal query As String) As Boolean
         Try
             executeCommand(query)
@@ -234,33 +270,18 @@ Public Class MssqlManager
         End Try
     End Function
 
-    Public Function deleteOne(ByVal table As String, ByVal inputData As Dictionary(Of String, Object)) As Boolean
-        'Filter data for the query
-        Dim data As Dictionary(Of String, Object) = New Dictionary(Of String, Object)
-
-        For Each item As KeyValuePair(Of String, Object) In inputData
-            If Not item.Value.ToString() = "" Then
-                data.Add(item.Key, item.Value)
-            End If
-        Next
-
+    Public Function deleteOne(ByVal table As String, ByVal key As String, ByVal value As Object) As Boolean
         Try
             Dim query As String = "DELETE FROM " + table & vbCrLf &
                 "WHERE "
 
-            For Each item As KeyValuePair(Of String, Object) In data
-                If TypeOf item.Value Is String Then
-                    query = query & item.Key + " = '" + item.Value + "'"
-                Else
-                    query = query & item.Key + " = " + item.Value.ToString()
-                End If
+            If TypeOf value Is String Then
+                query = query & key + " = '" + value + "'"
+            Else
+                query = query & key + " = " + value.ToString()
+            End If
 
-                If Not item.Equals(data.Last()) Then
-                    query = query & " AND "
-                End If
-            Next
-
-            MsgBox(query)
+            executeCommand(query)
 
             Return True
         Catch ex As Exception

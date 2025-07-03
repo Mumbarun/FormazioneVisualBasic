@@ -5,6 +5,7 @@ Public Class fCreate
     Private table As String
     Private columns As MssqlManager.ColumnInfo()
     Private tMain As DataTable
+    Private id As KeyValuePair(Of String, Object)
 
     Public Sub New(ByVal mssqlManagerInput As MssqlManager, ByVal tableInput As String)
         InitializeComponent()
@@ -18,6 +19,26 @@ Public Class fCreate
         loadData()
 
         render()
+    End Sub
+
+    Public Sub New(ByVal mssqlManagerInput As MssqlManager, ByVal tableInput As String, ByVal input As KeyValuePair(Of String, Object))
+        InitializeComponent()
+
+        'Colleague the scroller to the pannel
+        renderScroll()
+
+        mssqlManager = mssqlManagerInput
+        table = tableInput
+
+        columns = mssqlManager.reorderTableColumns(mssqlManager.getTableColumns(table)).ToArray()
+        tMain = generateTable()
+
+        render()
+
+        'Additional part for the "input" value
+        id = input
+        loadRow(input)
+        btnSave.Text = "Modifica"
     End Sub
 
     Private Sub loadData()
@@ -40,9 +61,10 @@ Public Class fCreate
             If info.type = "String" Or info.type = "Id" Then
                 Dim tb As TextBox = New TextBox()
 
-                tb.Name = "tb_" + info.name
+                'tb.Name = "tb_" + info.name
+                tb.Name = info.name
                 tb.MaxLength = info.maxLength
-                tb.Size = New Drawing.Size(250, 20)
+                tb.Size = New Drawing.Size(270, 20)
                 tb.Location = New Point(160, height)
                 tb.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
 
@@ -58,9 +80,10 @@ Public Class fCreate
             ElseIf info.type = "Integer" Or info.type = "Decimal" Then
                 Dim nud As NumericUpDown = New NumericUpDown()
 
-                nud.Name = "nud_" + info.name
+                'nud.Name = "nud_" + info.name
+                nud.Name = info.name
                 nud.Maximum = info.maxLength
-                nud.Size = New Drawing.Size(250, 20)
+                nud.Size = New Drawing.Size(270, 20)
                 nud.Location = New Point(160, height)
                 nud.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
 
@@ -99,7 +122,7 @@ Public Class fCreate
         res.Text = name
         res.Size = New Drawing.Size(150, 20)
         res.Location = New Point(0, height)
-        res.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
+        res.Anchor = AnchorStyles.Top Or AnchorStyles.Left
 
         Return res
     End Function
@@ -174,10 +197,10 @@ Public Class fCreate
 
                 row.Item("info") = info
                 If info.type = "String" Then
-                    row.Item("id") = "tb_" + info.name
+                    row.Item("id") = info.name
                     row.Item("value") = ""
                 ElseIf info.type = "Integer" Or info.type = "Decimal" Then
-                    row.Item("id") = "nud_" + info.name
+                    row.Item("id") = info.name
                     row.Item("value") = 0
                 Else
                     row.Item("id") = info.name
@@ -190,6 +213,30 @@ Public Class fCreate
 
         Return res
     End Function
+
+    Private Sub loadRow(ByVal input As KeyValuePair(Of String, Object))
+        Dim item As Dictionary(Of String, Object) = mssqlManager.findOne(table, input)
+
+        For Each element As KeyValuePair(Of String, Object) In item
+            'pMain.Controls.Find(element.Key.ToString(), True).FirstOrDefault().Text = element.Value
+
+            Dim els As Control() = Me.Controls.Find(element.Key.ToString(), True)
+
+            If els.Count > 0 Then
+                Dim el As Control = els.FirstOrDefault()
+
+                'MsgBox(element.Key.ToString() + " => " + element.Value.ToString())
+
+                If TypeOf el Is TextBox Then
+                    Dim tb As TextBox = CType(el, TextBox)
+                    tb.Text = element.Value.ToString()
+                Else
+                    Dim nud As NumericUpDown = CType(el, NumericUpDown)
+                    nud.Value = element.Value
+                End If
+            End If
+        Next
+    End Sub
 
     Private Sub btnSave_Click(sender As Object, e As EventArgs) Handles btnSave.Click
         Dim query As String = generateQuery()

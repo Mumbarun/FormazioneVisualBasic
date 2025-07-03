@@ -17,8 +17,6 @@ Public Class Form1
     End Sub
 
     Public Sub loadData()
-        'generateMssqlManagers()
-
         generateTabs()
     End Sub
 
@@ -54,12 +52,12 @@ Public Class Form1
         Dim cms As ContextMenuStrip = New ContextMenuStrip
         cms.Name = "cms" + section
 
-        'Adding Edit button
+        'Adding Edit button to the ToolStripMenu
         Dim tsmiEdit As ToolStripMenuItem = New ToolStripMenuItem("Modifica")
         tsmiEdit.Name = "tsmiEdit" + section
         AddHandler tsmiEdit.Click, AddressOf editItem
 
-        'Adding Delete button
+        'Adding Delete button to the ToolStripMenu
         Dim tsmiDelete As ToolStripMenuItem = New ToolStripMenuItem("Elimina")
         tsmiDelete.Name = "tsmiDelete" + section
         AddHandler tsmiDelete.Click, AddressOf deleteItem
@@ -76,25 +74,27 @@ Public Class Form1
         'Adding the mouse down manager function for auto-select the DataGridVIew row
         AddHandler dgv.MouseDown, AddressOf dgvMouseDown
 
-        'Adding the connect button component to the tab
-        Dim btnUpdate = New Button()
-
-        btnUpdate.Text = "Aggiorna"
-        btnUpdate.Location = New Point(0, 75)
-        btnUpdate.Size = New Drawing.Size(76, 23)
-        btnUpdate.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
-
-        AddHandler btnUpdate.Click, AddressOf updateTab
-
-        'Adding the connect button component to the tab
+        'Adding the new element button component to the tab
         Dim btnExecute = New Button()
 
         btnExecute.Text = "Nuovo"
-        btnExecute.Location = New Point(77, 75)
+        btnExecute.Location = New Point(0, 75)
         btnExecute.Size = New Drawing.Size(76, 23)
         btnExecute.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
 
         AddHandler btnExecute.Click, AddressOf newElement
+
+        'Adding the update button component to the tab
+        Dim btnUpdate = New Button()
+
+        btnUpdate.Text = "Aggiorna"
+        btnUpdate.Location = New Point(77, 75)
+        btnUpdate.Size = New Drawing.Size(76, 23)
+        btnUpdate.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
+
+        btnUpdate.Visible = False
+
+        AddHandler btnUpdate.Click, AddressOf updateTab
 
         'Adding the query string combobox
         Dim cbQuery As ComboBox = New ComboBox()
@@ -104,11 +104,18 @@ Public Class Form1
             cbQuery.Items.Add(table)
         Next
 
+        cbQuery.Text = "Seleziona tabella"
         cbQuery.Location = New Point(22, 75)
         cbQuery.Size = New Drawing.Size(175, 20)
         cbQuery.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
 
-        AddHandler cbQuery.TextChanged, AddressOf updateQuery
+        cbQuery.DropDownStyle = ComboBoxStyle.DropDownList
+
+        If Not String.IsNullOrWhiteSpace(tables(i).Rows(0)("Table")) Then
+            cbQuery.SelectedItem = tables(i).Rows(0)("Table")
+        End If
+
+        AddHandler cbQuery.SelectedIndexChanged, AddressOf updateQuery
 
         'Applying components to the tab
         Dim sqlData As SqlDataAdapter = New SqlDataAdapter("SELECT * FROM " + row("Table"), connection)
@@ -198,23 +205,34 @@ Public Class Form1
 
         'If createForm.ShowDialog() = DialogResult.OK Then
         '    MsgBox("form creato")
-
-        '    updateTab()
         'Else
         '    MsgBox("form annullato")
-
-        '    updateTab()
         'End If
     End Sub
 
     Private Sub updateQuery(sender As Object, e As EventArgs)
         Dim cbQuery As ComboBox = DirectCast(sender, ComboBox)
 
-        tables(tcMain.SelectedIndex).Rows(0)("Table") = cbQuery.Text
+        tables(tcMain.SelectedIndex).Rows(0)("Table") = cbQuery.SelectedItem
+
+        updateTab()
     End Sub
 
     Private Sub editItem(sender As Object, e As EventArgs)
-        MsgBox("Edit")
+        Dim dgv As DataGridView = Me.Controls.Find("dgvMain", True).FirstOrDefault()
+
+        If dgv.SelectedRows.Count > 0 Then
+            Dim rSelected As DataGridViewRow = dgv.SelectedRows(0)
+
+            Dim query As KeyValuePair(Of String, Object) = New KeyValuePair(Of String, Object)(dgv.Columns.Item(0).HeaderText, rSelected.Cells.Item(0).Value)
+
+            Dim createForm As fCreate = New fCreate(tables(tcMain.SelectedIndex).Rows(0)("MssqlManager"), tables(tcMain.SelectedIndex).Rows(0)("Table"), query)
+
+            createForm.ShowDialog()
+            updateTab()
+        Else
+            MsgBox("Nessuna riga evidenziata")
+        End If
     End Sub
 
     Private Sub deleteItem(sender As Object, e As EventArgs)
@@ -223,15 +241,12 @@ Public Class Form1
         If dgv.SelectedRows.Count > 0 Then
             Dim rSelected As DataGridViewRow = dgv.SelectedRows(0)
 
-            Dim query As Dictionary(Of String, Object) = New Dictionary(Of String, Object)
+            Dim key As String = dgv.Columns.Item(0).HeaderText
+            Dim value As Object = rSelected.Cells.Item(0).Value
 
-            For Each cell As DataGridViewCell In rSelected.Cells
-                Dim key As String = dgv.Columns.Item(cell.ColumnIndex).HeaderText
-
-                query.Add(key, cell.Value)
-            Next
-
-            tables(tcMain.SelectedIndex).Rows(0)("MssqlManager").deleteOne(tables(tcMain.SelectedIndex).Rows(0)("table"), query)
+            If tables(tcMain.SelectedIndex).Rows(0)("MssqlManager").deleteOne(tables(tcMain.SelectedIndex).Rows(0)("table"), key, value) Then
+                updateTab()
+            End If
         Else
             MsgBox("Nessuna riga evidenziata")
         End If
