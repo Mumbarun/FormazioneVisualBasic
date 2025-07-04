@@ -30,8 +30,7 @@ Public Class fCreate
         mssqlManager = mssqlManagerInput
         table = tableInput
 
-        columns = mssqlManager.reorderTableColumns(mssqlManager.getTableColumns(table)).ToArray()
-        tMain = generateTable()
+        loadData()
 
         render()
 
@@ -133,9 +132,7 @@ Public Class fCreate
         vsbMain.Maximum = pMain.VerticalScroll.Maximum
     End Sub
 
-    Private Function generateQuery() As String
-        'Dim query As String = "SET IDENTITY_INSERT " + table + " ON; " &
-        '    "SET IDENTITY_INSERT " + table + " ON; Insert into " + table + " values("
+    Private Function generateCreateQuery() As String
         Dim query As String = "SET IDENTITY_INSERT " + table + " ON;" & vbCrLf &
             "INSERT INTO " + table + " ("
 
@@ -155,7 +152,6 @@ Public Class fCreate
 
         For i As Integer = 0 To (tMain.Rows.Count - 1)
             Dim row As DataRow = tMain.Rows(i)
-            Dim info As MssqlManager.ColumnInfo = row("info")
 
             If row("value").ToString() = "" Then
                 query = query & "NULL"
@@ -168,6 +164,43 @@ Public Class fCreate
             End If
         Next
         query = query & ")" & vbCrLf &
+            "SET IDENTITY_INSERT " + table + " OFF;"
+
+        Return query
+    End Function
+
+    Private Function generateEditQuery() As String
+        Dim query As String = "SET IDENTITY_INSERT " + table + " ON;" & vbCrLf &
+            "UPDATE " + table & vbCrLf &
+            "SET"
+
+        Dim rows As DataRow() = tMain.Select("isChanged = True")
+
+        For i As Integer = 0 To (rows.Count - 1)
+            Dim row As DataRow = rows(i)
+
+            'If row("isChanged") Then
+            If TypeOf row("value") Is String Then
+                query = query + " " + row("id") + " = '" + row("value") + "'"
+            Else
+                query = query + " " + row("id") + " = " + row("value").ToString()
+            End If
+
+            If i < rows.Count - 1 Then
+                query = query & ","
+            End If
+            'End If
+        Next
+
+        If TypeOf id.Value Is String Then
+            query = query & vbCrLf &
+                "WHERE " + id.Key + " = '" + id.Value + "';"
+        Else
+            query = query & vbCrLf &
+                "WHERE " + id.Key + " = " + id.Value.ToString() + ";"
+        End If
+
+        query = query & vbCrLf &
             "SET IDENTITY_INSERT " + table + " OFF;"
 
         Return query
@@ -186,9 +219,17 @@ Public Class fCreate
         Dim cValue As DataColumn = New DataColumn("value")
         cValue.DataType = System.Type.GetType("System.Object")
 
+        Dim cOldValue As DataColumn = New DataColumn("oldValue")
+        cOldValue.DataType = System.Type.GetType("System.Object")
+
+        Dim cIsChanged As DataColumn = New DataColumn("isChanged")
+        cIsChanged.DataType = System.Type.GetType("System.Boolean")
+
         res.Columns.Add(cId)
         res.Columns.Add(cInfo)
         res.Columns.Add(cValue)
+        res.Columns.Add(cOldValue)
+        res.Columns.Add(cIsChanged)
 
         'Creating data rows
         For Each info As MssqlManager.ColumnInfo In columns
@@ -196,15 +237,19 @@ Public Class fCreate
                 Dim row As DataRow = res.NewRow()
 
                 row.Item("info") = info
+                row.Item("isChanged") = False
                 If info.type = "String" Then
                     row.Item("id") = info.name
                     row.Item("value") = ""
+                    row.Item("oldValue") = ""
                 ElseIf info.type = "Integer" Or info.type = "Decimal" Then
                     row.Item("id") = info.name
                     row.Item("value") = 0
+                    row.Item("oldValue") = 0
                 Else
                     row.Item("id") = info.name
                     row.Item("value") = ""
+                    row.Item("oldValue") = ""
                 End If
 
                 res.Rows.Add(row)
@@ -225,21 +270,31 @@ Public Class fCreate
             If els.Count > 0 Then
                 Dim el As Control = els.FirstOrDefault()
 
-                'MsgBox(element.Key.ToString() + " => " + element.Value.ToString())
-
                 If TypeOf el Is TextBox Then
                     Dim tb As TextBox = CType(el, TextBox)
                     tb.Text = element.Value.ToString()
+
                 Else
                     Dim nud As NumericUpDown = CType(el, NumericUpDown)
                     nud.Value = element.Value
                 End If
             End If
+
+            Dim row As DataRow = tMain.Select("id = '" + element.Key + "'").FirstOrDefault()
+            row("oldValue") = element.Value
+            row("isChanged") = False
         Next
     End Sub
 
     Private Sub btnSave_Click(sender As Object, e As EventArgs) Handles btnSave.Click
-        Dim query As String = generateQuery()
+        Dim query As String
+
+        If id.Key Is Nothing AndAlso id.Value Is Nothing Then
+            query = generateCreateQuery()
+        Else
+            query = generateEditQuery()
+        End If
+
         If mssqlManager.executeCommand(query) Then
             Form1.loadData()
             Me.Close()
@@ -263,6 +318,12 @@ Public Class fCreate
         Dim index As Integer = tMain.Rows.IndexOf(row)
 
         tMain.Rows(index)("value") = tb.Text
+
+        If tMain.Rows(index)("oldValue") = tb.Text Then
+            tMain.Rows(index)("isChanged") = False
+        Else
+            tMain.Rows(index)("isChanged") = True
+        End If
     End Sub
 
     Private Sub nudUpdateValues(sender As Object, e As EventArgs)
