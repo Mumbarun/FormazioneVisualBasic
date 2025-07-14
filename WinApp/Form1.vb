@@ -1,8 +1,5 @@
-﻿Imports System.Collections.Specialized.BitVector32
-Imports System.Data.SqlClient
+﻿Imports System.Data.SqlClient
 Imports Glossario
-Imports Microsoft.SqlServer
-Imports Microsoft.VisualBasic.ApplicationServices
 
 Public Class Form1
     Private ReadOnly config As Config = New Config()
@@ -244,7 +241,7 @@ Public Class Form1
             Dim key As String = dgv.Columns.Item(0).HeaderText
             Dim value As Object = rSelected.Cells.Item(0).Value
 
-            If tables(tcMain.SelectedIndex).Rows(0)("MssqlManager").deleteOne(tables(tcMain.SelectedIndex).Rows(0)("table"), key, value) Then
+            If tables(tcMain.SelectedIndex).Rows(0)("MssqlManager").deleteOneElement(tables(tcMain.SelectedIndex).Rows(0)("table"), key, value) Then
                 updateTab()
             End If
         Else

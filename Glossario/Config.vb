@@ -1,5 +1,4 @@
-﻿Imports System.Collections.Specialized.BitVector32
-Imports System.IO
+﻿Imports System.IO
 
 Public Class Config
     Private filePath As String
@@ -164,10 +163,6 @@ Public Class Config
             lines.Add("[" + section + "]")
             lines.Add(key + "=" + value)
         End If
-
-        'For Each line As String In lines
-        '    MsgBox(line)
-        'Next
 
         File.WriteAllLines(filePath, lines.ToArray())
         Return Read(section, key)

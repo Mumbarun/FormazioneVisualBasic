@@ -1,11 +1,11 @@
-﻿Imports System.Data.Sql
-Imports System.Data.SqlClient
-Imports System.Net
+﻿Imports System.Data.SqlClient
+Imports Glossario
 
 Public Class MssqlManager
     Public connection As SqlConnection
     Public sqlCommand As SqlCommand
     Public tables As String()
+    Private logger As Logger = New Logger()
 
     Private _Cnn As String = ""
 
@@ -260,9 +260,11 @@ Public Class MssqlManager
         End Try
     End Function
 
-    Public Function createNew(ByVal query As String) As Boolean
+    Public Function createElement(ByVal query As String) As Boolean
         Try
             executeCommand(query)
+
+            logger.AddLog("CREATE", query)
 
             Return True
         Catch ex As Exception
@@ -270,7 +272,19 @@ Public Class MssqlManager
         End Try
     End Function
 
-    Public Function deleteOne(ByVal table As String, ByVal key As String, ByVal value As Object) As Boolean
+    Public Function editElement(ByVal query As String) As Boolean
+        Try
+            executeCommand(query)
+
+            logger.AddLog("EDIT", query)
+
+            Return True
+        Catch ex As Exception
+            Return False
+        End Try
+    End Function
+
+    Public Function deleteOneElement(ByVal table As String, ByVal key As String, ByVal value As Object) As Boolean
         Try
             Dim query As String = "DELETE FROM " + table & vbCrLf &
                 "WHERE "
@@ -282,6 +296,8 @@ Public Class MssqlManager
             End If
 
             executeCommand(query)
+
+            logger.AddLog("DELETE", query)
 
             Return True
         Catch ex As Exception

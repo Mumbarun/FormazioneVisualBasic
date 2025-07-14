@@ -287,20 +287,22 @@ Public Class fCreate
     End Sub
 
     Private Sub btnSave_Click(sender As Object, e As EventArgs) Handles btnSave.Click
-        Dim query As String
-
         If id.Key Is Nothing AndAlso id.Value Is Nothing Then
-            query = generateCreateQuery()
+            If mssqlManager.createElement(generateCreateQuery()) Then
+                Form1.loadData()
+                Me.Close()
+            Else
+                MsgBox("Errore durante la creazione dell'oggetto in " + table)
+            End If
         Else
-            query = generateEditQuery()
+            If mssqlManager.editElement(generateEditQuery()) Then
+                Form1.loadData()
+                Me.Close()
+            Else
+                MsgBox("Errore durante la creazione dell'oggetto in " + table)
+            End If
         End If
 
-        If mssqlManager.executeCommand(query) Then
-            Form1.loadData()
-            Me.Close()
-        Else
-            MsgBox("Errore durante la creazione dell'oggetto in " + table)
-        End If
     End Sub
 
     Private Sub vsbMain_Scroll(sender As Object, e As ScrollEventArgs) Handles vsbMain.Scroll
