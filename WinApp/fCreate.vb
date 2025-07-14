@@ -319,7 +319,7 @@ Public Class fCreate
 
         tMain.Rows(index)("value") = tb.Text
 
-        If tMain.Rows(index)("oldValue") = tb.Text Then
+        If tMain.Rows(index)("oldValue").ToString() = tb.Text.ToString() Then
             tMain.Rows(index)("isChanged") = False
         Else
             tMain.Rows(index)("isChanged") = True
