@@ -8,8 +8,8 @@ Public Class LocalEmployee
     Public Property FirstName As String
     Public Property Title As String
     Public Property TitleOfCourtesy As String
-    Public Property BirthDate As String
-    Public Property HireDate As String
+    Public Property BirthDate As DateTime
+    Public Property HireDate As DateTime
     Public Property Address As String
     Public Property City As String
     Public Property Region As String
@@ -17,7 +17,7 @@ Public Class LocalEmployee
     Public Property Country As String
     Public Property HomePhone As String
     Public Property Extension As String
-    Public Property Photo As String
+    Public Property Photo As Byte()
     Public Property Notes As String
     Public Property ReportsTo As Integer
     Public Property PhotoPath As String
@@ -76,7 +76,9 @@ Module Module1
                 For Each prop As PropertyInfo In type.GetProperties(BindingFlags.Public Or BindingFlags.Instance)
                     Dim localProp As PropertyInfo = localType.GetProperty(prop.Name)
 
-                    localProp.SetValue(localE, prop.GetValue(e))
+                    If localProp IsNot Nothing Then
+                        localProp.SetValue(localE, prop.GetValue(e))
+                    End If
                 Next
 
                 employees.Add(localE)
@@ -232,8 +234,8 @@ Module Module1
 
         Console.ReadKey()
 
-        Console.WriteLine($"Esiste il dipendente numero 50? {ifElementExists(employees, "EmployeeID", 50)}")
-        Console.WriteLine($"Esiste il dipendente numero 150? {ifElementExists(employees, "EmployeeID", 150)}")
+        Console.WriteLine($"Esiste il dipendente con nome 'Gino'? {ifElementExists(employees, "FirstName", "Gino")}")
+        Console.WriteLine($"Esiste il dipendente con come 'Aieie'? {ifElementExists(employees, "FirstName", "Aieie")}")
 
         Console.ReadKey()
     End Sub
