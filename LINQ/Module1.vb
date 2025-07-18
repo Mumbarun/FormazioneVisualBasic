@@ -2,40 +2,40 @@
 Imports System.Text
 Imports System.Data.Entity
 
-'Public Class Employee
-'    Public Property EmployeeID As Integer
-'    Public Property LastName As String
-'    Public Property FirstName As String
-'    Public Property Title As String
-'    Public Property TitleOfCourtesy As String
-'    Public Property BirthDate As String
-'    Public Property HireDate As String
-'    Public Property Address As String
-'    Public Property City As String
-'    Public Property Region As String
-'    Public Property PostalCode As String
-'    Public Property Country As String
-'    Public Property HomePhone As String
-'    Public Property Extension As String
-'    Public Property Photo As String
-'    Public Property Notes As String
-'    Public Property ReportsTo As Integer
-'    Public Property PhotoPath As String
+Public Class LocalEmployee
+    Public Property EmployeeID As Integer
+    Public Property LastName As String
+    Public Property FirstName As String
+    Public Property Title As String
+    Public Property TitleOfCourtesy As String
+    Public Property BirthDate As String
+    Public Property HireDate As String
+    Public Property Address As String
+    Public Property City As String
+    Public Property Region As String
+    Public Property PostalCode As String
+    Public Property Country As String
+    Public Property HomePhone As String
+    Public Property Extension As String
+    Public Property Photo As String
+    Public Property Notes As String
+    Public Property ReportsTo As Integer
+    Public Property PhotoPath As String
 
-'    Function contains(ByVal value As Object) As Boolean
-'        Dim type As Type = Me.GetType()
-'        For Each prop As PropertyInfo In type.GetProperties(BindingFlags.Public Or BindingFlags.Instance)
-'            If prop.GetValue(Me).ToString() = value.ToString() Then
-'                Return True
-'            End If
-'        Next
+    Function contains(ByVal value As Object) As Boolean
+        Dim type As Type = Me.GetType()
+        For Each prop As PropertyInfo In type.GetProperties(BindingFlags.Public Or BindingFlags.Instance)
+            If prop.GetValue(Me).ToString() = value.ToString() Then
+                Return True
+            End If
+        Next
 
-'        Return False
-'    End Function
-'End Class
+        Return False
+    End Function
+End Class
 
 Module Module1
-    Dim employees As List(Of Employee) = New List(Of Employee)
+    Dim employees As List(Of LocalEmployee) = New List(Of LocalEmployee)
 
     Public Function randomInt(ByVal max As Integer) As Integer
         Return CInt(Math.Ceiling(Rnd() * max)) + 1
@@ -61,11 +61,11 @@ Module Module1
         End If
     End Function
 
-    Sub populate(ByRef arr As List(Of Employee))
+    Sub populate(ByRef arr As List(Of LocalEmployee))
         arr.Clear()
 
         For i As Integer = 1 To 100
-            Dim cache As Employee = New Employee
+            Dim cache As LocalEmployee = New LocalEmployee
 
             cache.EmployeeID = i
             cache.LastName = randomString(20)
@@ -90,7 +90,7 @@ Module Module1
         Next
     End Sub
 
-    Sub reorder(ByRef arr As List(Of Employee), ByVal key As String, Optional ByVal ascending As Boolean = True)
+    Sub reorder(ByRef arr As List(Of LocalEmployee), ByVal key As String, Optional ByVal ascending As Boolean = True)
         If String.IsNullOrWhiteSpace(key) Then
             If ascending Then
                 arr = (From e In arr
@@ -102,7 +102,7 @@ Module Module1
                        Select e).ToList()
             End If
         Else
-            Dim prop As PropertyInfo = GetType(Employee).GetProperty(key)
+            Dim prop As PropertyInfo = GetType(LocalEmployee).GetProperty(key)
 
             If prop IsNot Nothing Then
                 If ascending Then
@@ -118,8 +118,8 @@ Module Module1
         End If
     End Sub
 
-    Function getElement(ByVal arr As List(Of Employee), ByVal key As String, ByVal value As Object) As Employee
-        Dim res As Employee = New Employee
+    Function getElement(ByVal arr As List(Of LocalEmployee), ByVal key As String, ByVal value As Object) As LocalEmployee
+        Dim res As LocalEmployee = New LocalEmployee
 
         Dim prop As PropertyInfo = res.GetType().GetProperty(key)
         If prop IsNot Nothing Then
@@ -131,18 +131,18 @@ Module Module1
         Return res
     End Function
 
-    'Function getElementByVal(ByVal arr As List(Of Employee), ByVal value As Object) As Employee
-    '    Dim res As Employee = Nothing
+    Function getElementByVal(ByVal arr As List(Of LocalEmployee), ByVal value As Object) As LocalEmployee
+        Dim res As LocalEmployee = Nothing
 
-    '    res = (From e In arr
-    '           Where e.contains(value)
-    '           Select e).FirstOrDefault()
+        res = (From e In arr
+               Where e.contains(value)
+               Select e).FirstOrDefault()
 
-    '    Return res
-    'End Function
+        Return res
+    End Function
 
-    Function ifElementExists(ByVal arr As List(Of Employee), ByVal key As String, ByVal value As Object) As Boolean
-        Dim prop As PropertyInfo = GetType(Employee).GetProperty(key)
+    Function ifElementExists(ByVal arr As List(Of LocalEmployee), ByVal key As String, ByVal value As Object) As Boolean
+        Dim prop As PropertyInfo = GetType(LocalEmployee).GetProperty(key)
 
         Dim n As Integer = (From e In arr
                             Where prop.GetValue(e) = value
@@ -151,19 +151,19 @@ Module Module1
         Return n > 0
     End Function
 
-    Sub printList(ByVal arr As List(Of Employee))
-        For Each e As Employee In arr
+    Sub printList(ByVal arr As List(Of LocalEmployee))
+        For Each e As LocalEmployee In arr
             printElement(e)
         Next
     End Sub
 
-    Sub printListByKey(ByVal arr As List(Of Employee), ByVal key As String)
-        For Each e As Employee In arr
+    Sub printListByKey(ByVal arr As List(Of LocalEmployee), ByVal key As String)
+        For Each e As LocalEmployee In arr
             printElementbyKey(e, key)
         Next
     End Sub
 
-    Sub printElement(ByVal e As Employee)
+    Sub printElement(ByVal e As LocalEmployee)
         Dim type As Type = e.GetType()
 
         Console.WriteLine("---")
@@ -175,7 +175,7 @@ Module Module1
         Console.WriteLine("")
     End Sub
 
-    Sub printElementbyKey(ByVal e As Employee, ByVal key As String)
+    Sub printElementbyKey(ByVal e As LocalEmployee, ByVal key As String)
         Dim type As Type = e.GetType()
         Dim prop As PropertyInfo = type.GetProperty(key)
 
