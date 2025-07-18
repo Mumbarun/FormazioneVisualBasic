@@ -1,5 +1,4 @@
 ﻿Imports System.Data.SqlClient
-Imports Glossario
 
 Public Class MssqlManager
     Public connection As SqlConnection
