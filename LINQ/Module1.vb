@@ -64,30 +64,49 @@ Module Module1
     Sub populate(ByRef arr As List(Of LocalEmployee))
         arr.Clear()
 
-        For i As Integer = 1 To 100
-            Dim cache As LocalEmployee = New LocalEmployee
+        Using context As New NorthwindEntities()
+            Dim es As List(Of Employee) = context.Employees.ToList()
 
-            cache.EmployeeID = i
-            cache.LastName = randomString(20)
-            cache.FirstName = randomString(20)
-            cache.Title = randomString(20)
-            cache.TitleOfCourtesy = randomString(20)
-            cache.BirthDate = randomString(20)
-            cache.HireDate = randomString(20)
-            cache.Address = randomString(20)
-            cache.City = randomString(20)
-            cache.Region = randomString(20)
-            cache.PostalCode = randomString(20)
-            cache.Country = randomString(20)
-            cache.HomePhone = randomString(20)
-            cache.Extension = randomString(20)
-            'cache.Photo = randomString(20)
-            cache.Notes = randomString(20)
-            cache.ReportsTo = randomInt(100)
-            cache.PhotoPath = randomString(20)
+            For Each e As Employee In es
+                Dim localE As LocalEmployee = New LocalEmployee
 
-            arr.Add(cache)
-        Next
+                Dim type As Type = GetType(Employee)
+                Dim localType As Type = localE.GetType()
+
+                For Each prop As PropertyInfo In type.GetProperties(BindingFlags.Public Or BindingFlags.Instance)
+                    Dim localProp As PropertyInfo = localType.GetProperty(prop.Name)
+
+                    localProp.SetValue(localE, prop.GetValue(e))
+                Next
+
+                employees.Add(localE)
+            Next
+        End Using
+
+        'For i As Integer = 1 To 100
+        '    Dim cache As LocalEmployee = New LocalEmployee
+
+        '    cache.EmployeeID = i
+        '    cache.LastName = randomString(20)
+        '    cache.FirstName = randomString(20)
+        '    cache.Title = randomString(20)
+        '    cache.TitleOfCourtesy = randomString(20)
+        '    cache.BirthDate = randomString(20)
+        '    cache.HireDate = randomString(20)
+        '    cache.Address = randomString(20)
+        '    cache.City = randomString(20)
+        '    cache.Region = randomString(20)
+        '    cache.PostalCode = randomString(20)
+        '    cache.Country = randomString(20)
+        '    cache.HomePhone = randomString(20)
+        '    cache.Extension = randomString(20)
+        '    cache.Photo = randomString(20)
+        '    cache.Notes = randomString(20)
+        '    cache.ReportsTo = randomInt(100)
+        '    cache.PhotoPath = randomString(20)
+
+        '    arr.Add(cache)
+        'Next
     End Sub
 
     Sub reorder(ByRef arr As List(Of LocalEmployee), ByVal key As String, Optional ByVal ascending As Boolean = True)
